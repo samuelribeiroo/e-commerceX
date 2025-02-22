@@ -1,0 +1,5 @@
+# Ignorar todas as pastas node_modules
+**/node_modules/
+
+# Se quiser ignorar apenas a node_modules do frontend
+# frontend/node_modules/
