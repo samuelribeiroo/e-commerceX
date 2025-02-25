@@ -1,5 +1,6 @@
 package ecommerce.backend.api.models.products;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -19,6 +20,7 @@ public class ProductCategory {
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<ProductBrand> brands = new ArrayList<>();
 
     public List<ProductBrand> getBrands() {
