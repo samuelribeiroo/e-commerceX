@@ -1,5 +1,6 @@
     package ecommerce.backend.api.models.products;
 
+    import com.fasterxml.jackson.annotation.JsonBackReference;
     import jakarta.persistence.*;
     import jakarta.validation.constraints.NotBlank;
 
@@ -20,6 +21,7 @@
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "category_id", nullable = false)
+        @JsonBackReference
         private ProductCategory category;
 
         @OneToMany(mappedBy = "productBrand", cascade = CascadeType.ALL)
