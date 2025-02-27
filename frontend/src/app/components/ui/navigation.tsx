@@ -1,6 +1,6 @@
 "use client";
 
-import { icons, NavigationContentProps } from "@/app/data";
+import { icons, images } from "@/app/data";
 import { Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { PropsWithChildren } from "react";
@@ -18,16 +18,24 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./sheet";
+import { MobileMenuProps, NavigationContentProps, NavigationGeneralProps } from "@/app/@types";
 
 
 function DesktopNavigation() {
-  
-
   return (
     <>
       <NavigationContainer>
         <Link href="/" className="flex-shrink-0">
-          <h1 className="text-3xl text-black font-bold">LOGO</h1>
+          <div className="inline-flex items-center gap-3">
+            <img
+              src={images[1].src}
+              alt=""
+              className="size-10"
+            />
+            <span className="inline-flex items-center font-inter text-3xl font-medium tracking-wider">
+              Ecommerce<p className="text-[#CC0000]">X</p>
+            </span>
+          </div>
         </Link>
 
         <div className="hidden sm:flex flex-1 max-w-xl relative">
@@ -37,7 +45,7 @@ function DesktopNavigation() {
 
         <NavigationContent icons={icons} />
       </NavigationContainer>
-      <div className="md:hidden sm:flex flex-1 max-w-xl relative px-4">
+      <div className="md:hidden sm:flex flex-1 max-w-xl relative px-4 mt-8">
         <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input type="search" placeholder="Search" className="w-full pl-10" />
       </div>
@@ -49,7 +57,7 @@ function NavigationContainer({ children }: PropsWithChildren) {
   return (
     <>
       <nav className="container mx-auto h-20 px-4">
-        <div className="d-flex-between gap-4 h-full">{children}</div>
+        <div className="flex flex-col md:flex-row md:d-flex-between gap-4 h-full">{children}</div>
       </nav>
     </>
   );
@@ -95,60 +103,49 @@ function NavigationContent({ icons }: NavigationContentProps) {
   );
 }
 
-type CategoriesNavigationProps = {
-  categories: string[];
-};
 
-function CategoriesNavigation({ categories }: CategoriesNavigationProps) {
+function CategoriesNavigation({ categories }: NavigationGeneralProps) {
   return (
-    <>
-      <nav className="hidden lg:flex items-center justify-center py-5 font-outfit">
-        <div className="flex items-center space-x-8 pl-8">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2">
-                <span>Todas cateorias</span>
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56 ml-6 mt-4">
-              {categories.map(( name ) => (
-                <DropdownMenuItem key={name} asChild>
-                  <Link
-                    href={`/${name.toLowerCase()}`}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>{name}</span>
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <div className="flex items-center space-x-6">
-            {categories.slice(0,6).map((name) => (
-              <Link
-                key={name}
-                href={`/${name.toLowerCase()}`}
-                className="text-sm text-gray-600 hover:text-gray-900"
-              >
-                {name}
-              </Link>
+    <nav className="hidden lg:flex items-center justify-center py-5 font-outfit">
+      <div className="flex items-center space-x-8 pl-8">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="flex items-center gap-2">
+              <span>Todas categorias</span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 ml-20 mt-4 bg-white">
+            {categories.map(({ id, name }) => (
+              <DropdownMenuItem key={id} asChild>
+                <Link
+                  href={`/categories/${id}`}
+                  className="flex items-center gap-2 cursor-pointer"
+                >
+                  <span>{name}</span>
+                </Link>
+              </DropdownMenuItem>
             ))}
-          </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <div className="flex items-center space-x-6">
+          {categories.slice(0, 6).map(({ id, name }) => (
+            <Link
+              key={id}
+              href={`/categories/${id}`}
+              className="text-sm text-gray-600 hover:text-gray-900"
+            >
+              {name}
+            </Link>
+          ))}
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }
 
-type MobileMenuProps = {
-  openMenu: (value: boolean) => void;
-  isOpen: boolean;
-  categories: string[];
-};
 
 function MobileMenu({ openMenu, categories }: MobileMenuProps) {
-  
   return (
     <>
       <Sheet>
@@ -165,10 +162,10 @@ function MobileMenu({ openMenu, categories }: MobileMenuProps) {
             <nav className="flex flex-col p-4">
               <div className="space-y-3">
                 <p className="text-sm font-medium text-gray-500">Categorias</p>
-                {categories.map((name) => (
+                {categories.map(({ id, name }) => (
                   <Link
-                    key={name}
-                    href={`/${name.toLowerCase()}`}
+                    key={id}
+                    href={`/categories/${id}`}
                     className="flex items-center gap-3 text-sm py-2 px-3 rounded-lg hover:bg-gray-100"
                     onClick={() => openMenu(false)}
                   >
