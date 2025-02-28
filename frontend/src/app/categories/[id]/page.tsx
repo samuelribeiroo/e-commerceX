@@ -1,11 +1,10 @@
+import { Product } from "@/app/@types";
+import {
+  ProductCard,
+  ProductsGrid,
+} from "@/app/components/ui/product-category-ui";
 import { apiURL } from "@/app/data";
 import { notFound } from "next/navigation";
-
-interface Product {
-  productTitle: string;
-  productPrice: number;
-  images: any;
-}
 
 export default async function ProductsCategoryPage({
   params,
@@ -28,21 +27,36 @@ export default async function ProductsCategoryPage({
         ...product,
         id: item.id,
         title: item.name,
+        description: item.productDescription
       }))
-    ); 
+    );
 
     return (
       <div className="p-4">
-        {products.map(({ productTitle, productPrice, images }: Product) => {
-          return (
-            <>
-            {/* not finished yet the jsx */}
-              <h1>{productTitle}</h1>
-              <p>{productPrice}</p>
-              <img src={images[0].imageURL} alt="" />
-            </>
-          );
-        })}
+        <ProductsGrid>
+          {products.map(
+            ({
+              id,
+              productTitle,
+              productPrice,
+              productDescription,
+              images,
+            }: Product) => {
+              return (
+                <>
+                  <ProductCard
+                    src={images[0].imageURL}
+                    alt={productTitle}
+                    productTitle={productTitle}
+                    productPrice={productPrice}
+                    productDescription={productDescription}
+                    key={id}
+                  />
+                </>
+              );
+            }
+          )}
+        </ProductsGrid>
       </div>
     );
   } catch (error) {
