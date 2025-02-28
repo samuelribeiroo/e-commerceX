@@ -1,5 +1,7 @@
 package ecommerce.backend.api.models.products;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
@@ -16,6 +18,7 @@ public class ProductModel {
     @NotBlank
     private String productTitle;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("imageOrder ASC")
     private List<ProductImage> images = new ArrayList<>();
@@ -33,6 +36,7 @@ public class ProductModel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id", nullable = false)
     @NotNull
+    @JsonIgnoreProperties("products")
     private ProductBrand productBrand;
 
 

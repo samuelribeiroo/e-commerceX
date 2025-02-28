@@ -1,6 +1,7 @@
     package ecommerce.backend.api.models.products;
 
     import com.fasterxml.jackson.annotation.JsonBackReference;
+    import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
     import jakarta.persistence.*;
     import jakarta.validation.constraints.NotBlank;
 
@@ -25,6 +26,7 @@
         private ProductCategory category;
 
         @OneToMany(mappedBy = "productBrand", cascade = CascadeType.ALL)
+        @JsonIgnoreProperties("products")
         private List<ProductModel> products = new ArrayList<>();
 
         public UUID getId() {
@@ -35,11 +37,11 @@
             this.id = id;
         }
 
-        public String getBrandTitle() {
+        public String getName() {
             return name;
         }
 
-        public void setBrandTitle(String name) {
+        public void setName(String name) {
             this.name = name;
         }
 

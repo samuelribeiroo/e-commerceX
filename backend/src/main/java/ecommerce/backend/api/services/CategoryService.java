@@ -1,6 +1,7 @@
 package ecommerce.backend.api.services;
 
 import ecommerce.backend.api.dto.request.CategoryRequestDTO;
+import ecommerce.backend.api.interfaces.ICategoryService;
 import ecommerce.backend.api.models.products.ProductCategory;
 import ecommerce.backend.api.repositories.CategoriesRepository;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class CategoryService  {
+public class CategoryService implements ICategoryService {
 
     private final CategoriesRepository categoriesRepository;
 
@@ -22,7 +23,7 @@ public class CategoryService  {
     public ProductCategory createCategory(CategoryRequestDTO category) {
         ProductCategory productCategory = new ProductCategory();
 
-        productCategory.setCategoryTitle(category.getName());
+        productCategory.setName(category.getName());
 
         return categoriesRepository.save(productCategory);
     }

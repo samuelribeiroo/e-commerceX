@@ -1,5 +1,6 @@
 package ecommerce.backend.api.models.products;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -39,11 +40,11 @@ public class ProductCategory {
         this.id = id;
     }
 
-    public String getCategoryTitle() {
+    public String getName() {
         return name;
     }
 
-    public void setCategoryTitle(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 }

@@ -2,6 +2,7 @@ package ecommerce.backend.api.services;
 
 import ecommerce.backend.api.dto.request.BrandRequestDTO;
 import ecommerce.backend.api.dto.response.BrandResponseDTO;
+import ecommerce.backend.api.interfaces.IBrandService;
 import ecommerce.backend.api.models.products.ProductBrand;
 import ecommerce.backend.api.models.products.ProductCategory;
 import ecommerce.backend.api.repositories.BrandsRepository;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class BrandService {
+public class BrandService implements IBrandService {
 
 private BrandsRepository brandsRepository;
 private CategoriesRepository categoriesRepository;
@@ -25,7 +26,7 @@ private CategoriesRepository categoriesRepository;
         ProductCategory category = categoriesRepository.findById(brand.getCategoryId()).orElseThrow();
 
         ProductBrand brands = new ProductBrand();
-        brands.setBrandTitle(brand.getName());
+        brands.setName(brand.getName());
         brands.setCategory(category);
 
         return brandsRepository.save(brands);
@@ -36,7 +37,7 @@ private CategoriesRepository categoriesRepository;
         List<ProductBrand> brands = brandsRepository.findByCategoryId(categoryId);
 
         return brands.stream()
-                .map(brand -> new BrandResponseDTO(brand.getId(), brand.getBrandTitle()))
+                .map(brand -> new BrandResponseDTO(brand.getId(), brand.getName()))
                 .toList();
     }
 }
