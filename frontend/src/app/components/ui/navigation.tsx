@@ -1,15 +1,16 @@
 "use client";
 
-import { icons, images } from "@/app/data";
+import { apiURL, icons, images } from "@/app/data";
 import { Menu, Search } from "lucide-react";
 import Link from "next/link";
-import { PropsWithChildren } from "react";
+import React, { ChangeEvent, PropsWithChildren } from "react";
 import { Input } from "./input";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropDownSearch,
 } from "./dropdown-menu";
 import {
   Sheet,
@@ -18,37 +19,87 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./sheet";
-import { MobileMenuProps, NavigationContentProps, NavigationGeneralProps } from "@/app/@types";
-
+import {
+  MobileMenuProps,
+  NavigationContentProps,
+  NavigationGeneralProps,
+  Product,
+} from "@/app/@types";
+import useSearchProducts from "@/app/hooks/useSearchProducts";
 
 function DesktopNavigation() {
+  const { searchRef } = useSearchProducts();
+
   return (
     <>
       <NavigationContainer>
         <Link href="/" className="flex-shrink-0">
           <div className="inline-flex items-center gap-3">
-            <img
-              src={images[1].src}
-              alt=""
-              className="size-10"
-            />
+            <img src={images[1].src} alt="" className="size-10" />
             <span className="inline-flex items-center font-inter text-3xl font-medium tracking-wider">
               Ecommerce<p className="text-[#CC0000]">X</p>
             </span>
           </div>
         </Link>
 
-        <div className="hidden sm:flex flex-1 max-w-xl relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input type="search" placeholder="Search" className="w-full pl-10" />
+        <div
+          className="hidden sm:flex flex-1 max-w-xl relative"
+          ref={searchRef}
+        >
+          <FormSearchProducts />
         </div>
 
         <NavigationContent icons={icons} />
       </NavigationContainer>
-      <div className="md:hidden sm:flex flex-1 max-w-xl relative px-4 mt-8">
-        <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-        <Input type="search" placeholder="Search" className="w-full pl-10" />
-      </div>
+
+      <nav
+        className="md:hidden sm:flex flex-1 max-w-xl relative px-4 mt-8"
+        ref={searchRef}
+      >
+        <FormSearchProducts />
+      </nav>
+    </>
+  );
+}
+
+function FormSearchProducts() {
+  const { searchResults, handleSearchProduct, searchTerm, setSearchTerm } =
+    useSearchProducts();
+
+  return (
+    <>
+      <form onSubmit={handleSearchProduct} className="w-full relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+        <Input
+          type="search"
+          placeholder="Search"
+          className="w-full pl-10"
+          value={searchTerm}
+          onChange={(event: ChangeEvent<HTMLInputElement>) =>
+            setSearchTerm(event.target.value)
+          }
+        />
+
+        {searchResults.length > 0 && (
+          <DropDownSearch>
+            {searchResults.map((product) => (
+              <span className="inline-flex items-center justify-start ml-5">
+                <img
+                  src={product.images[0]?.imageURL}
+                  className="size-8 rounded-sm"
+                />
+                <Link
+                  key={product.id}
+                  href={`/products/${product.id}`}
+                  className="block p-3 hover:bg-gray-100 transition-colors"
+                >
+                  {product.productTitle}
+                </Link>
+              </span>
+            ))}
+          </DropDownSearch>
+        )}
+      </form>
     </>
   );
 }
@@ -57,7 +108,9 @@ function NavigationContainer({ children }: PropsWithChildren) {
   return (
     <>
       <nav className="container mx-auto h-20 px-4">
-        <div className="flex flex-col md:flex-row md:d-flex-between gap-4 h-full">{children}</div>
+        <div className="flex flex-col md:flex-row md:d-flex-between gap-4 h-full">
+          {children}
+        </div>
       </nav>
     </>
   );
@@ -103,7 +156,6 @@ function NavigationContent({ icons }: NavigationContentProps) {
   );
 }
 
-
 function CategoriesNavigation({ categories }: NavigationGeneralProps) {
   return (
     <nav className="hidden lg:flex items-center justify-center py-5 font-outfit">
@@ -143,7 +195,6 @@ function CategoriesNavigation({ categories }: NavigationGeneralProps) {
     </nav>
   );
 }
-
 
 function MobileMenu({ openMenu, categories }: MobileMenuProps) {
   return (
