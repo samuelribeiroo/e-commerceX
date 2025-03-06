@@ -1,6 +1,6 @@
 "use client";
 
-import { apiURL, icons, images } from "@/app/data";
+import { icons, images } from "@/app/data";
 import { Menu, Search } from "lucide-react";
 import Link from "next/link";
 import React, { ChangeEvent, PropsWithChildren } from "react";
@@ -26,6 +26,7 @@ import {
   Product,
 } from "@/app/@types";
 import useSearchProducts from "@/app/hooks/useSearchProducts";
+import { NotFound } from "../not-found";
 
 function DesktopNavigation() {
   const { searchRef } = useSearchProducts();
@@ -63,12 +64,24 @@ function DesktopNavigation() {
 }
 
 function FormSearchProducts() {
-  const { searchResults, handleSearchProduct, searchTerm, setSearchTerm } =
-    useSearchProducts();
+  const {
+    searchResults,
+    handleSearchProduct,
+    searchTerm,
+    setSearchTerm,
+    searchRef,
+  } = useSearchProducts();
+
+  console.log("termo", searchTerm);
+  console.log("resultado", searchResults);
 
   return (
     <>
-      <form onSubmit={handleSearchProduct} className="w-full relative">
+      <form
+        onSubmit={handleSearchProduct}
+        className="w-full relative"
+        autoComplete="false"
+      >
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           type="search"
@@ -80,24 +93,34 @@ function FormSearchProducts() {
           }
         />
 
-        {searchResults.length > 0 && (
+        {searchResults.length > 0 ? (
           <DropDownSearch>
-            {searchResults.map((product) => (
-              <span className="inline-flex items-center justify-start ml-5">
-                <img
-                  src={product.images[0]?.imageURL}
-                  className="size-8 rounded-sm"
-                />
-                <Link
-                  key={product.id}
-                  href={`/products/${product.id}`}
-                  className="block p-3 hover:bg-gray-100 transition-colors"
-                >
-                  {product.productTitle}
-                </Link>
-              </span>
-            ))}
+            {searchResults.map(({ id, productTitle, images }) => {
+              return (
+                <>
+                  <span className="inline-flex items-center justify-start ml-5">
+                    <img
+                      src={images[0]?.imageURL || ""}
+                      className="size-8 rounded-sm"
+                    />
+                    <Link
+                      key={id}
+                      href={`/products/${id}`}
+                      className="block p-3 hover:bg-gray-100 transition-colors"
+                    >
+                      {productTitle}
+                    </Link>
+                  </span>
+                </>
+              );
+            })}
           </DropDownSearch>
+        ) : (
+          searchTerm && (
+            <DropDownSearch>
+              <NotFound message="Nenhum produto encontrado."/>
+            </DropDownSearch>
+          )
         )}
       </form>
     </>

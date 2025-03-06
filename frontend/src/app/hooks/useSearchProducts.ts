@@ -42,12 +42,23 @@ export default function useSearchProducts() {
 
     try {
       const response = await fetch(
-        `${apiURL}/product/products?search=${encodeURIComponent(searchTerm)}`
+        `${apiURL}/product/products?search=${encodeURIComponent(searchTerm)}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
-      const data = await response.json();
+      let data = await response.json();
 
-      setSearchResults(data);
+      data = data.map((product: Product[]) => ({
+        ...product,
+        // @ts-ignore
+        images: product.images.slice(0, 1),
+      })); // This variable exists in the codebase because the fetch API brings an array with all the images related to the product, but we only need the first one. So apply the spread and slice operator to the array of product images.
+
+      setSearchResults(data || []);
     } catch (error) {
       setSearchResults([]);
     }
@@ -56,7 +67,7 @@ export default function useSearchProducts() {
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
-    timeoutRef.current = setTimeout(() => handleSearchProduct(), 500); // 500ms = 0.5 segundos
+    timeoutRef.current = setTimeout(() => handleSearchProduct(), 500); // 500ms = 0.5 seconds
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
