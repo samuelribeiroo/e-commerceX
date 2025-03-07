@@ -16,4 +16,6 @@ public interface IProductService {
 
     List<ProductModel> searchProducts(String searchTerm);
 
+    List<ProductModel> getRandomDiverseProducts(List<String> categoryNames, int limit);
+
 }

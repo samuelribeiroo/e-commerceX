@@ -58,4 +58,13 @@ public class ProductController {
         List<ProductModel> searchedProduct = productService.searchProducts(searchTerm);
         return ResponseEntity.ok(searchedProduct);
     }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<ProductModel>> getRandomDiverseProducts(
+            @RequestParam List<String> categories,
+            @RequestParam(defaultValue = "3") int limit) {
+        List<ProductModel> retrieveRandomProducts = productService.getRandomDiverseProducts(categories, limit);
+
+        return ResponseEntity.ok().body(retrieveRandomProducts);
+    }
 }
