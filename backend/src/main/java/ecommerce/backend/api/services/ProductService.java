@@ -111,7 +111,7 @@ public class ProductService implements IProductService {
                 2
         );
 
-        return randomProducts.isEmpty() ? Optional.empty() : Optional.of(randomProducts.get(0));
+        return randomProducts.isEmpty() ? Optional.empty() : Optional.ofNullable(randomProducts.get(0));
 
     }
 }
