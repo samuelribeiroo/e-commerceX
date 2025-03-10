@@ -77,19 +77,18 @@ public class ProductService {
         List<ProductModel> products = new ArrayList<>();
 
 
-        List<ProductModel> firstCategoryProducts = productsRepository.findRandomProducts(
+        List<ProductModel> firstCategoryProducts = Optional.ofNullable(productsRepository.findRandomProducts(
                 firstCategoryName,
                 firstCategoryCount
-        );
-
-        products.addAll(firstCategoryProducts);
+        )).orElseGet(Collections::emptyList);
 
 
-        List<ProductModel> secondCategoryProducts = productsRepository.findRandomProducts(
+        List<ProductModel> secondCategoryProducts = Optional.ofNullable(productsRepository.findRandomProducts(
                 secondCategoryName,
                 secondCategoryCount
-        );
+        )).orElseGet(Collections::emptyList);
 
+        products.addAll(firstCategoryProducts);
         products.addAll(secondCategoryProducts);
 
         Collections.shuffle(products);
