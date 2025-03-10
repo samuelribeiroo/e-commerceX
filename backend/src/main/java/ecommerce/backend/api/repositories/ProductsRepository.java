@@ -20,12 +20,12 @@ public interface ProductsRepository extends JpaRepository<ProductModel, UUID> {
      SELECT p.* FROM products p
      INNER JOIN brands b ON p.brand_id = b.id
      INNER JOIN categories c ON b.category_id = c.id
-     WHERE c.id = :categoryId
+     WHERE c.category = :categoryName
      ORDER BY RANDOM()
      LIMIT :limit
     
      """, nativeQuery = true)
-    List<ProductModel> findRandomProducts(@Param("categoryId") UUID categoryId, @Param("limit") int limit);
+    List<ProductModel> findRandomProducts(@Param("categoryName") String categoryName, @Param("limit") int limit);
 
 
 }

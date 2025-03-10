@@ -60,11 +60,18 @@ public class ProductController {
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<ProductModel>> getRandomDiverseProducts(
-            @RequestParam List<String> categories,
-            @RequestParam(defaultValue = "3") int limit) {
-        List<ProductModel> retrieveRandomProducts = productService.getRandomDiverseProducts(categories, limit);
+    public ResponseEntity<List<ProductModel>> getDiverseProducts(
+            @RequestParam String firstCategory,
+            @RequestParam int firstCount,
+            @RequestParam String secondCategory,
+            @RequestParam int secondCount) {
 
-        return ResponseEntity.ok().body(retrieveRandomProducts);
+        List<ProductModel> products = productService.getRandomDiverseProducts(
+                firstCategory,
+                secondCategory,
+                firstCount,
+                secondCount);
+
+        return ResponseEntity.ok(products);
     }
 }

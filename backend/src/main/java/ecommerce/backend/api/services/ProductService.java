@@ -12,13 +12,10 @@ import ecommerce.backend.api.repositories.ProductsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
-public class ProductService implements IProductService {
+public class ProductService {
     private ProductsRepository productsRepository;
     private BrandsRepository brandsRepository;
     private CategoriesRepository categoriesRepository;
@@ -76,42 +73,28 @@ public class ProductService implements IProductService {
         return productsRepository.findByProductTitleContainingIgnoreCase(searchTerm);
     }
 
-    public List<ProductModel> getRandomDiverseProducts(List<String> categoryNames, int limit) {
-        List<ProductCategory> categories = categoriesRepository.findByCategoryNames(categoryNames);
-
+    public List<ProductModel> getRandomDiverseProducts(String firstCategoryName, String secondCategoryName, int firstCategoryCount, int secondCategoryCount) {
         List<ProductModel> products = new ArrayList<>();
-        int cycles = 0;
-        int maxCycles = 10;
 
-        while (hasReachedProductLimit(products, limit) && hasNotReachedMaxCycles(cycles, maxCycles)) {
-            for (ProductCategory category : categories) {
-                Optional<ProductModel> randomProducts = fetchRandomProductFromCategory(category);
 
-               randomProducts.ifPresent(products::add);
+        List<ProductModel> firstCategoryProducts = productsRepository.findRandomProducts(
+                firstCategoryName,
+                firstCategoryCount
+        );
 
-                if (hasReachedProductLimit(products, limit)) break;
+        products.addAll(firstCategoryProducts);
 
-            }
-            cycles++;
-        }
+
+        List<ProductModel> secondCategoryProducts = productsRepository.findRandomProducts(
+                secondCategoryName,
+                secondCategoryCount
+        );
+
+        products.addAll(secondCategoryProducts);
+
+        Collections.shuffle(products);
+
         return products;
     }
 
-    public boolean hasReachedProductLimit(List<ProductModel> product, int limit) {
-        return product.size() < limit;
-    }
-
-    public boolean hasNotReachedMaxCycles(int cycles, int maxCycles) {
-        return cycles < maxCycles;
-    }
-
-    public Optional<ProductModel> fetchRandomProductFromCategory(ProductCategory category) {
-        List<ProductModel> randomProducts = productsRepository.findRandomProducts(
-                category.getId(),
-                2
-        );
-
-        return randomProducts.isEmpty() ? Optional.empty() : Optional.ofNullable(randomProducts.get(0));
-
-    }
 }
