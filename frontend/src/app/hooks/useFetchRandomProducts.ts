@@ -1,8 +1,12 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Product } from "../@types";
 import { apiURL } from "../data";
+import { cacheManagerFactory } from "../utils/cache-manager";
+
+
+const CACHE_PREFIX = "random_products";
 
 export default function useFetchRandomProducts() {
   const [randomProducts, setRandomProducts] = useState<Product[]>([]);
@@ -14,15 +18,40 @@ export default function useFetchRandomProducts() {
       secondCategory: string,
       secondCount: number
     ) => {
+      const params = {
+        firstCategory,
+        firstCount,
+        secondCategory,
+        secondCount,
+      };
+
+      const cacheKey = cacheManagerFactory.generateKey(CACHE_PREFIX, params);
+
+      const getRandomProductsByCategory = `${apiURL}/product/random?firstCategory=${encodeURIComponent(
+        firstCategory
+      )}&firstCount=${firstCount}&secondCategory=${encodeURIComponent(
+        secondCategory
+      )}&secondCount=${encodeURIComponent(secondCount)}`;
+
+      // This variable implements the endpoint that's fetch random products based on a category.
+      // To execute, it is necessary to pass the category name and the limit of products per category
+      // Example: fetchRandomProducts("Notebooks", 3, "Cellphones", 2) -> fetch me 3 notebook products and 2 cellphone products
+
       try {
-        const response = await fetch(
-          `${apiURL}/product/random?firstCategory=${encodeURIComponent(firstCategory)}&firstCount=${firstCount}&secondCategory=${encodeURIComponent(secondCategory)}&secondCount=${encodeURIComponent(secondCount)}`
-        ); 
+        const cachedData = cacheManagerFactory.get<Product[]>(cacheKey);
+
+        if (cachedData) {
+          setRandomProducts(cachedData);
+          return;
+        }
+
+        const response = await fetch(getRandomProductsByCategory);
 
         if (!response.ok) throw new Error("Erro na requisição");
 
-        const data = await response.json();
+        const data: Product[] = await response.json();
 
+        cacheManagerFactory.save(cacheKey, data);
         setRandomProducts(data);
       } catch (error) {
         console.error(error);
@@ -30,6 +59,11 @@ export default function useFetchRandomProducts() {
     },
     []
   );
+
+  useEffect(() => {
+    cacheManagerFactory.cleanExpired(CACHE_PREFIX);
+  }, []);
+
 
   return {
     randomProducts,

@@ -1,32 +1,46 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
-import { apiURL } from "../data";
+import { apiURL, CACHE_TIME } from "../data";
+import { Category } from "../@types";
+import { CacheManager } from "../utils/cache-manager";
+
+const CACHE_PREFIX = "categories";
+const cache = new CacheManager(CACHE_TIME.ONE_WEEK);
 
 export default function useFetchCategories() {
-  const [categoryName, setCategoryName] = useState<string[]>([]);
-  
+  const [categories, setCategories] = useState<Category[]>([]);
+
   useEffect(() => {
     async function loadCategories() {
+      const params = {};
+      const cacheKey = cache.generateKey(CACHE_PREFIX, params);
+
       try {
+        const cachedData = cache.get<Category[]>(cacheKey);
+
+        if (cachedData) {
+          setCategories(cachedData);
+          return;
+        }
+
         const response = await fetch(`${apiURL}/categories`);
+        if (!response.ok) throw new Error(`Erro ao carregar categorias.`);
 
-        if(!response.ok) throw new Error(`Erro ao carregar categorias.`)
-
-        const data = await response.json();
-
-        // @ts-ignore
-        const categoriesName = data.map(category => category.name);
-        
-        setCategoryName(categoriesName)
+        const data: Category[] = await response.json();
+        cache.save(cacheKey, data);
+        setCategories(data);
       } catch (error) {
         console.error("Erro ao buscar categorias:", error);
       }
-      
     }
 
-    loadCategories()
+    loadCategories();
   }, []);
 
-  return { categoryName }
+  useEffect(() => {
+    cache.cleanExpired(CACHE_PREFIX);
+  }, []);
+
+  return { categories };
 }
