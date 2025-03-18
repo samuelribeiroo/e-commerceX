@@ -27,6 +27,8 @@ import {
 } from "@/app/@types";
 import useSearchProducts from "@/app/hooks/useSearchProducts";
 import { NotFound } from "../not-found";
+import { useCart } from "@/app/contexts/CartContext";
+import { CART_ACTIONS } from "@/app/contexts/cartReducer";
 
 function DesktopNavigation() {
   const { searchRef } = useSearchProducts();
@@ -35,12 +37,7 @@ function DesktopNavigation() {
     <>
       <NavigationContainer>
         <Link href="/" className="flex-shrink-0">
-          <div className="inline-flex items-center gap-3">
-            <img src={images[1].src} alt="" className="size-10" />
-            <span className="inline-flex items-center font-inter text-3xl font-medium tracking-wider">
-              Ecommerce<p className="text-[#CC0000]">X</p>
-            </span>
-          </div>
+          <ApplicationLogo />
         </Link>
 
         <div
@@ -63,7 +60,20 @@ function DesktopNavigation() {
   );
 }
 
-function FormSearchProducts() {
+function ApplicationLogo() {
+  return (
+    <>
+      <div className="inline-flex items-center gap-3">
+        <img src={images[1].src} alt="" className="size-10" />
+        <span className="inline-flex items-center font-inter text-3xl font-medium tracking-wider">
+          Ecommerce<p className="text-[#CC0000]">X</p>
+        </span>
+      </div>
+    </>
+  );
+}
+
+function FormSearchProducts(props: { inputStyle?: string }) {
   const {
     searchResults,
     handleSearchProduct,
@@ -71,9 +81,6 @@ function FormSearchProducts() {
     setSearchTerm,
     searchRef,
   } = useSearchProducts();
-
-  console.log("termo", searchTerm);
-  console.log("resultado", searchResults);
 
   return (
     <>
@@ -85,8 +92,8 @@ function FormSearchProducts() {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
           type="search"
-          placeholder="Search"
-          className="w-full pl-10"
+          placeholder="Pesquisar"
+          className={`pl-10 ${props.inputStyle || "w-full"}`}
           value={searchTerm}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             setSearchTerm(event.target.value)
@@ -118,7 +125,7 @@ function FormSearchProducts() {
         ) : (
           searchTerm && (
             <DropDownSearch>
-              <NotFound message="Nenhum produto encontrado."/>
+              <NotFound message="Nenhum produto encontrado." />
             </DropDownSearch>
           )
         )}
@@ -140,35 +147,51 @@ function NavigationContainer({ children }: PropsWithChildren) {
 }
 
 function NavigationContent({ icons }: NavigationContentProps) {
+  const { state, dispatch } = useCart();
+
+  const cartCount = state.products.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
+
+  const handleShowCart = () =>
+    dispatch({
+      type: CART_ACTIONS.SHOW_CART,
+      payload: null,
+    });
+
+
   return (
     <>
       <div className="flex items-center gap-4 sm:gap-8 font-inter">
         {icons.map((icon) => {
-          const isProductAdded = icon.added !== undefined && icon.added > 0;
+          let count = 0;
+          if (icon.id === 2) count = cartCount;
 
           return (
             <div key={icon.id} className="relative">
               {icon.id === 0 ? (
-                <Link
-                  href={icon.link}
-                  className="flex items-center gap-2 text-sm font-semibold text-darkBrown border-hover-zinc"
-                >
-                  <span className="inline-flex items-center gap-3">
-                    <icon.icon className="size-6" color="#323238" />
-                    <h3 className="text-sm tracking-[0.5px] text-[#707784] font-semibold ">
-                      Conta
-                    </h3>
-                  </span>
-                </Link>
+                <>
+                  <Link
+                    href={icon.link}
+                    className="flex items-center gap-2 text-sm border-hover-zinc"
+                  >
+                    <span className="inline-flex items-center gap-3">
+                      <icon.icon className="size-6" color="#323238" />
+                      <h3 className="text-sm tracking-[0.5px] text-[#707784] font-semibold ">
+                        Conta
+                      </h3>
+                    </span>
+                  </Link>
+                </>
               ) : (
                 <Link
-                  href={icon.link}
+                  href={""}
                   className="flex items-center gap-2 text-sm border-hover-zinc"
+                  onClick={handleShowCart}
                 >
                   <icon.icon className="size-5" color="#323238" />
-                  {isProductAdded && (
-                    <span className="pop-up-added">{icon.added}</span>
-                  )}
+                  {count > 0 && <span className="pop-up-added">{count}</span>}
                 </Link>
               )}
             </div>
@@ -255,4 +278,10 @@ function MobileMenu({ openMenu, categories }: MobileMenuProps) {
   );
 }
 
-export { DesktopNavigation, CategoriesNavigation, MobileMenu };
+export {
+  DesktopNavigation,
+  CategoriesNavigation,
+  MobileMenu,
+  ApplicationLogo,
+  FormSearchProducts,
+};
