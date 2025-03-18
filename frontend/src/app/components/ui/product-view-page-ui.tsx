@@ -1,13 +1,13 @@
 "use client";
 
-import { CartItem, Product, ProductPageProps } from "@/app/@types";
+import { CartItem, Product, ProductImagePropsWithOrder, ProductPageProps } from "@/app/@types";
 import { useCart } from "@/app/contexts/CartContext";
 import { formatCurrencyBRL, generateRandomNumber } from "@/app/utils";
 import { Heart, Minus, Plus, Share2, Trash2, X } from "lucide-react";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { PropsWithChildren, ReactNode, useState } from "react";
-import { CART_REDUCER_ACTIONS } from "@/app/contexts/cartReducer";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { CART_ACTIONS } from "@/app/contexts/cartReducer";
 import { NotFound } from "../not-found";
 import {
   CheckoutCartSidebar as Checkout,
@@ -16,6 +16,8 @@ import {
   TotalPrice,
   CartSidebarData as Container,
 } from "./shopping-cart-ui";
+import { it } from "node:test";
+import { cacheManagerFactory } from "@/app/utils/cache-manager";
 
 function ProductPageContainer({ title, children }: ProductPageProps) {
   return (
@@ -32,13 +34,6 @@ function ProductPageInfo({ children }: PropsWithChildren) {
       <div className="flex flex-col lg:flex-row gap-8">{children}</div>
     </>
   );
-}
-
-interface ProductImage {
-  id: string;
-  alt?: string;
-  imageURL: string;
-  image_order: number;
 }
 
 function ProductImageGallery(props: {
@@ -85,7 +80,7 @@ function ProductImagesMiniatures({ children }: PropsWithChildren) {
   );
 }
 
-function MainProductImage(image: ProductImage) {
+function MainProductImage(image: ProductImagePropsWithOrder) {
   return (
     <>
       <div className="flex-1 border border-gray-200 rounded-lg p-4 flex items-center justify-center bg-white">
@@ -145,6 +140,7 @@ function Stars() {
     </>
   );
 }
+
 function BuyProductComponent(props: {
   text: string;
   icon: ReactNode;
@@ -161,7 +157,7 @@ function BuyProductComponent(props: {
 
   const addToCart = () => {
     dispatch({
-      type: "ADD_CART",
+      type: CART_ACTIONS.ADD,
       payload: {
         ...props.product,
         title: props.product?.productTitle,
@@ -192,11 +188,34 @@ function CartSidebar() {
     0
   );
 
+  const CACHE_PREFIX = "cart";
+  const cacheKey = cacheManagerFactory.generateKey(CACHE_PREFIX, {});
+
+  useEffect(() => {
+    const cachedProducts = cacheManagerFactory.get<CartItem[]>(cacheKey);
+    if (cachedProducts) {
+      dispatch({
+        type: CART_ACTIONS.CACHE,
+        payload: cachedProducts
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state.products.length > 0) {
+      cacheManagerFactory.save(cacheKey, state.products);
+    } else {
+      cacheManagerFactory.remove(cacheKey);
+    }
+  }, [state.products]);
+
+
   const handleShowCart = () =>
     dispatch({
-      type: CART_REDUCER_ACTIONS.SHOW_CART,
+      type: CART_ACTIONS.SHOW_CART,
       payload: null,
     });
+
 
   return (
     <aside
@@ -205,7 +224,7 @@ function CartSidebar() {
       }`}
     >
       <div className="p-6">
-        <HeaderSidebarCart title={"Seu Carrinho"}>
+        <HeaderSidebarCart title={"SEU CARRINHO"}>
           <button
             onClick={handleShowCart}
             className="text-gray-500 hover:text-gray-700 text-2xl p-1 rounded-full hover:bg-gray-100"
@@ -221,12 +240,14 @@ function CartSidebar() {
             </>
           ) : (
             <>
-              {state.products.map((item: Product) => {
+              {state.products.map((item) => {
+                const imageUrl = item.images?.[0]?.imageURL || "/placeholder.svg";
+
                 return (
                   <>
                     <Container>
                       <span className="relative w-24 h-24 border rounded overflow-hidden flex-shrink-0">
-                      <Image src={item.images[0]?.imageURL || "/placeholder.svg"} alt={item.productTitle} fill className="object-cover" />
+                      <Image src={imageUrl} alt={item.productTitle} fill className="object-cover" />
                       </span>
 
                       <SideBarContent
