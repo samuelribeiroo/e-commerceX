@@ -1,13 +1,21 @@
 "use client";
 
-import { generateRandomNumber } from "@/app/utils";
-import { Heart, Share2 } from "lucide-react";
+import { CartItem, Product, ProductPageProps } from "@/app/@types";
+import { useCart } from "@/app/contexts/CartContext";
+import { formatCurrencyBRL, generateRandomNumber } from "@/app/utils";
+import { Heart, Minus, Plus, Share2, Trash2, X } from "lucide-react";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import Image from "next/image";
 import { PropsWithChildren, ReactNode, useState } from "react";
-
-type ProductPageProps = PropsWithChildren<{
-  title: string;
-}>;
+import { CART_REDUCER_ACTIONS } from "@/app/contexts/cartReducer";
+import { NotFound } from "../not-found";
+import {
+  CheckoutCartSidebar as Checkout,
+  HeaderSidebarCart,
+  SideBarContent,
+  TotalPrice,
+  CartSidebarData as Container,
+} from "./shopping-cart-ui";
 
 function ProductPageContainer({ title, children }: ProductPageProps) {
   return (
@@ -21,9 +29,7 @@ function ProductPageContainer({ title, children }: ProductPageProps) {
 function ProductPageInfo({ children }: PropsWithChildren) {
   return (
     <>
-      <div className="flex flex-col lg:flex-row gap-8">
-        {children}
-        </div>
+      <div className="flex flex-col lg:flex-row gap-8">{children}</div>
     </>
   );
 }
@@ -139,82 +145,177 @@ function Stars() {
     </>
   );
 }
+function BuyProductComponent(props: {
+  text: string;
+  icon: ReactNode;
+  productId: string;
+  product: {
+    id: string;
+    productTitle: string;
+    productPrice: number;
+    productDescription?: string;
+    images?: Array<{ imageURL: string }>;
+  };
+}) {
+  const { dispatch } = useCart();
 
-function BuyProductComponent(props: {  text: string, icon: ReactNode }) {
+  const addToCart = () => {
+    dispatch({
+      type: "ADD_CART",
+      payload: {
+        ...props.product,
+        title: props.product?.productTitle,
+        quantity: 1,
+      },
+    });
+  };
+
   return (
-    <>
-          <div className="flex gap-2">
-            <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-sm">
-              {props.text}
-            </button>
-            <button className="bg-white border-orange-500 text-orange-500 hover:bg-orange-50 p-2">
-              {props.icon}
-            </button>
-          </div>
-    </>
-  )
+    <div className="flex gap-2">
+      <button
+        onClick={addToCart}
+        className="flex-1 font-semibold tracking-wide bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-sm"
+      >
+        {props.text}
+      </button>
+      <button className="bg-white border-orange-500 text-orange-500 hover:bg-orange-50 p-2">
+        {props.icon}
+      </button>
+    </div>
+  );
 }
 
-function ProductPriceConditions(props: {  total: string, discount: string, installment: string }) {
-  return (
-    <>
-     <div className="mb-6">
-            <p className="text-gray-500 line-through">
-              {props.total}
-            </p>
-            <div className="flex items-baseline">
-              <span className="text-4xl font-bold text-orange-500">
-                {props.discount}
-              </span>
-            </div>
-            <p className="text-sm text-gray-600">
-              À vista no PIX com <span className="font-bold">10% OFF</span>
-            </p>
+function CartSidebar() {
+  const { state, dispatch } = useCart();
+  const total = state.products.reduce(
+    (sum, item) => sum + item.productPrice * item.quantity,
+    0
+  );
 
-            <div className="mt-2">
-              <p className="text-gray-700">
-                {props.discount}
-              </p>
-              <p className="text-sm text-gray-600">
-                Em até 10x de{" "}
-                <span className="font-bold">
-                  {props.installment}
-                </span>{" "}
-                sem juros no cartão
-              </p>
-              <p className="text-sm text-gray-600">
-                Ou em 1x no cartão com{" "}
-                <span className="font-bold">10% OFF</span>
-              </p>
-            </div>
-          </div>
-    </>
-  )
+  const handleShowCart = () =>
+    dispatch({
+      type: CART_REDUCER_ACTIONS.SHOW_CART,
+      payload: null,
+    });
+
+  return (
+    <aside
+      className={`z-40 fixed right-0 top-0 h-full  w-96 bg-white shadow-xl transition-transform ${
+        state.isCartOpen ? "translate-x-0" : "translate-x-full"
+      }`}
+    >
+      <div className="p-6">
+        <HeaderSidebarCart title={"Seu Carrinho"}>
+          <button
+            onClick={handleShowCart}
+            className="text-gray-500 hover:text-gray-700 text-2xl p-1 rounded-full hover:bg-gray-100"
+          >
+            <X className="size-6" />
+          </button>
+        </HeaderSidebarCart>
+
+        <div className="space-y-4">
+          {state.products.length === 0 ? (
+            <>
+              <NotFound message="Nenhum produto adicionado." />
+            </>
+          ) : (
+            <>
+              {state.products.map((item: Product) => {
+                return (
+                  <>
+                    <Container>
+                      <span className="relative w-24 h-24 border rounded overflow-hidden flex-shrink-0">
+                      <Image src={item.images[0]?.imageURL || "/placeholder.svg"} alt={item.productTitle} fill className="object-cover" />
+                      </span>
+
+                      <SideBarContent
+                        title={item.productTitle}
+                        subtotal={total}
+                        quantity={item.quantity}
+                        price={item.productPrice}
+                        product={{
+                          id: item.id,
+                          productTitle: item.productTitle,
+                          productPrice: item.productPrice,
+                          productDescription: undefined,
+                          images: item.images
+                        }}
+                      />
+                    </Container>
+                  </>
+                );
+              })}
+              <TotalPrice subtotal={total} />
+              <Checkout message={"COMPRAR"} />
+            </>
+          )}
+        </div>
+      </div>
+    </aside>
+  );
 }
 
-function PromotionalComponent(props: { title: string, text: string, discount: string }) {
+function ProductPriceConditions(props: {
+  total: string;
+  discount: string;
+  installment: string;
+}) {
   return (
     <>
-        <div className="my-4 bg-gradient-to-r from-orange-500 to-orange-400 rounded-lg p-4 text-white">
-            <div className="text-center mb-2">
-              <p className="text-lg font-bold">{props.title}</p>
-              <p>
-              {props.text}
-              </p>
-            </div>
-            <div className="flex justify-between items-center mt-4">
-              <div>
-                <p className="text-sm">Desconto:</p>
-                <p className="text-2xl font-bold">{props.discount}</p>
-              </div>
-              <div>
-                <p className="text-sm">Restam:</p>
-                <p className="text-2xl font-bold">{`${generateRandomNumber(68)} un.`}</p>
-              </div>
-            </div>
-          </div>
+      <div className="mb-6">
+        <p className="text-gray-500 line-through">{props.total}</p>
+        <div className="flex items-baseline">
+          <span className="text-4xl font-bold text-orange-500">
+            {props.discount}
+          </span>
+        </div>
+        <p className="text-sm text-gray-600">
+          À vista no PIX com <span className="font-bold">10% OFF</span>
+        </p>
+
+        <div className="mt-2">
+          <p className="text-gray-700">{props.discount}</p>
+          <p className="text-sm text-gray-600">
+            Em até 10x de <span className="font-bold">{props.installment}</span>{" "}
+            sem juros no cartão
+          </p>
+          <p className="text-sm text-gray-600">
+            Ou em 1x no cartão com <span className="font-bold">10% OFF</span>
+          </p>
+        </div>
+      </div>
     </>
-  )
+  );
+}
+
+function PromotionalComponent(props: {
+  title: string;
+  text: string;
+  discount: string;
+}) {
+  return (
+    <>
+      <div className="my-4 bg-gradient-to-r from-orange-500 to-orange-400 rounded-lg p-4 text-white">
+        <div className="text-center mb-2">
+          <p className="text-lg font-bold">{props.title}</p>
+          <p>{props.text}</p>
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <div>
+            <p className="text-sm">Desconto:</p>
+            <p className="text-2xl font-bold">{props.discount}</p>
+          </div>
+          <div>
+            <p className="text-sm">Restam:</p>
+            <p className="text-2xl font-bold">{`${generateRandomNumber(
+              68
+            )} un.`}</p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
 
 export {
@@ -224,6 +325,7 @@ export {
   MainProductImage,
   ProductGeneralRating,
   BuyProductComponent,
+  CartSidebar,
   ProductPriceConditions,
-  PromotionalComponent
+  PromotionalComponent,
 };
