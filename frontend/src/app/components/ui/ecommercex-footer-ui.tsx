@@ -22,8 +22,8 @@ export default function EcommerceFooter() {
           <div>
             <h3 className="text-lg font-medium mb-4">Entre em contato</h3>
             <span className="space-y-2 text-sm text-gray-600">
-              {contact.map((item) => (
-                <p className="font-medium">{item.text}</p>
+              {contact.map((item, id) => (
+                <p className="font-medium" key={id}>{item.text}</p>
               ))}
             </span>
           </div>
@@ -94,8 +94,8 @@ function CustomerServiceComponent() {
       <div>
         <h3 className="text-lg font-medium mb-4">Serviços ao Consumidor</h3>
         <ul className="space-y-2 text-sm text-gray-600">
-          {services.map((item) => (
-          <li>
+          {services.map((item, id) => (
+          <li key={id}>
             <Link href="#" className="hover:text-blue-600">
              {item.title}
             </Link>
@@ -117,8 +117,7 @@ function CategoriesList() {
         <ul className="space-y-2 text-sm text-gray-600">
           {categories.map(({ id, name }) => {
             return (
-              <>
-                <li>
+                <li key={id}>
                   <Link
                     href={`/categories/${id}`}
                     className="hover:text-blue-600"
@@ -127,7 +126,6 @@ function CategoriesList() {
                     {name}
                   </Link>
                 </li>
-              </>
             );
           })}
         </ul>
