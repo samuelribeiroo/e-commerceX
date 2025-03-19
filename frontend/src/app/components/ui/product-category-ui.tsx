@@ -2,13 +2,13 @@ import { PropsWithChildren } from "react";
 import Image from "next/image";
 import { ContentCardProps, ProductImage } from "@/app/@types";
 import { Heart } from "lucide-react";
-import normalizeString from "@/app/utils/normalizeString";
-import formatCurrencyBRL from "@/app/utils/formatCurrency";
+import { formatCurrencyBRL, normalizeString } from "@/app/utils";
+
 
 function ProductsGrid({ children }: PropsWithChildren) {
   return (
     <>
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="grid grid-cols-1 p-4 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {children}
       </section>
     </>

@@ -43,7 +43,7 @@ export function ProductCategoryView({ initialBrands, initialProducts }: ProductC
 
   return (
     <>
-      <div className="ml-[230px] p-4">
+      <div className="mx-auto p-4 md:ml-[230px]">
         <SortingOptions activeSort={sortOption} onSortChange={setSortOption} />
       </div>
       <ProductViewSection>
