@@ -10,9 +10,12 @@ export const initialState: CartState = {
   products: [],
 };
 
-export enum CART_REDUCER_ACTIONS {
+export enum CART_ACTIONS {
   ADD = "ADD_CART",
   SHOW_CART = "TOGGLE_CART",
+  REMOVE = "REMOVE_FROM_CART",
+  DECREASE = "DECREASE_QUANTITY",
+  CACHE = "HYDRATE",
 }
 
 export default function cartReducer(
@@ -20,7 +23,7 @@ export default function cartReducer(
   action: CartAction
 ): any {
   switch (action.type) {
-    case CART_REDUCER_ACTIONS.ADD:
+    case CART_ACTIONS.ADD:
       const isAlreadyAddedToCart = state.products.find(
         (product: Product) => product.id === action.payload.id
       );
@@ -43,8 +46,35 @@ export default function cartReducer(
         isCartOpen: true,
       };
 
-    case CART_REDUCER_ACTIONS.SHOW_CART:
+    case CART_ACTIONS.SHOW_CART:
       return { ...state, isCartOpen: !state.isCartOpen };
+
+    case CART_ACTIONS.REMOVE:
+      return {
+        ...state,
+        products: state.products.filter(
+          (product: CartItem) => product.id !== String(action.payload)
+        ),
+      };
+
+    case CART_ACTIONS.DECREASE:
+      return {
+        ...state,
+        products: state.products
+          .map((product) =>
+            product.id === String(action.payload)
+              ? { ...product, quantity: Math.max(0, product.quantity - 1) }
+              : product
+          )
+          .filter((product) => product.quantity > 0),
+      };
+
+    case CART_ACTIONS.CACHE:
+      return {
+        ...state,
+        products: action.payload,
+        isCartOpen: false, 
+      };
 
     default:
       return state;
