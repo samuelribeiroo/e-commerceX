@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
-public class ProductService {
+public class ProductService implements IProductService {
     private ProductsRepository productsRepository;
     private BrandsRepository brandsRepository;
     private CategoriesRepository categoriesRepository;
