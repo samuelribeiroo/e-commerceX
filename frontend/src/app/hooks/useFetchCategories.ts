@@ -24,7 +24,7 @@ export default function useFetchCategories() {
           return;
         }
 
-        const response = await fetch(`${apiURL}/categories`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
         if (!response.ok) throw new Error(`Erro ao carregar categorias.`);
 
         const data: Category[] = await response.json();

@@ -27,7 +27,7 @@ export default function useFetchRandomProducts() {
 
       const cacheKey = cacheManagerFactory.generateKey(CACHE_PREFIX, params);
 
-      const getRandomProductsByCategory = `${apiURL}/product/random?firstCategory=${encodeURIComponent(
+      const getRandomProductsByCategory = `${process.env.NEXT_PUBLIC_API_URL}/product/random?firstCategory=${encodeURIComponent(
         firstCategory
       )}&firstCount=${firstCount}&secondCategory=${encodeURIComponent(
         secondCategory

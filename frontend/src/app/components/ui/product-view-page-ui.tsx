@@ -158,9 +158,10 @@ function BuyProductComponent(props: {
   const addToCart = () => {
     dispatch({
       type: CART_ACTIONS.ADD,
+      // @ts-ignore
       payload: {
         ...props.product,
-        title: props.product?.productTitle,
+        productTitle: props.product?.productTitle,
         quantity: 1,
       },
     });
@@ -174,7 +175,7 @@ function BuyProductComponent(props: {
       >
         {props.text}
       </button>
-      <button className="bg-white border-orange-500 text-orange-500 hover:bg-orange-50 p-2">
+      <button className="bg-white border-orange-500 text-orange-500 hover:bg-orange-50 p-2" onClick={addToCart}>
         {props.icon}
       </button>
     </div>

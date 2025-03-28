@@ -1,4 +1,4 @@
-import { apiURL } from '@/app/data';
+import { apiURL, CACHE_TIME } from '@/app/data';
 import { notFound } from 'next/navigation';
 import { ProductCategoryView } from '../product-view';
 
@@ -13,7 +13,11 @@ export default async function ProductsCategoryPage({
     
     const { id } = await Promise.resolve(params);
       
-    const response = await fetch(`${apiURL}/categories/${id}`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories/${id}`, {
+      next: {
+        revalidate: CACHE_TIME.EIGHT_HOURS
+      }
+    });
     
     if (!response.ok) notFound();
     
