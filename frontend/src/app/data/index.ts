@@ -43,7 +43,7 @@ const productCategories: ProductCategoriesProps[] = [
     title: "Relógios Digitais",
     discount: 0,
     src: "https://firebasestorage.googleapis.com/v0/b/third-project-89e32.appspot.com/o/PRODUTOS%2Fcelulares%2Fslides%2Fblog%2FNOOTEBOK%252Fstore-card-13-watch-nav-202409-removebg-preview.webp?alt=media&token=32235761-b800-48c5-b849-276ac5df1d69",
-    link: "/categories/bb63751d-9031-4add-83d5-c82625bac7a1",
+    link: "/categories/03d651d1-d45c-46af-a3c4-ca6a2ae05303",
   },
   {
     id: 2,
@@ -58,7 +58,7 @@ const productCategories: ProductCategoriesProps[] = [
     title: "Headphones",
     discount: 0,
     src: "https://firebasestorage.googleapis.com/v0/b/third-project-89e32.appspot.com/o/PRODUTOS%2Fcelulares%2Fslides%2Fblog%2FNOOTEBOK%252FGUEST_2182ce54-420b-439e-ac58-c388467e90ea.webp?alt=media&token=e0d7e4bc-5027-40e2-a3c5-4ab2f1917bf1",
-    link: "/categories/e7f084a0-6c85-48fd-b3a3-25e0fe464a49",
+    link: "/categories/cc91fc38-7996-4798-a807-615a7915107c",
   },
 ];
 
@@ -121,7 +121,7 @@ const blogPosts: BlogPostsProps[] = [
     excerpt:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sit amet quam finibus, gravida mi in, fermentum est. Nulla lacinia, orci ac dictum euismod, ligula leo suscipit...",
     imageUrl:
-      "https://firebasestorage.googleapis.com/v0/b/third-project-89e32.appspot.com/o/produtos%2FblogPost2.webp?alt=media&token=d68e6f97-da5e-4bb7-90ab-13cd8c988647",
+      "https://firebasestorage.googleapis.com/v0/b/third-project-89e32.appspot.com/o/PRODUTOS%2Fcelulares%2Fprodutos%252FblogPost2.webp?alt=media&token=e5af0650-986c-4185-965a-59fb0e78ce94",
     alt: "Laptop with colorful lighting",
   },
 ];
