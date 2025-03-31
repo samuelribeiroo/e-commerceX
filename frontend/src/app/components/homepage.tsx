@@ -4,7 +4,7 @@ import AsideCategories from "./ui/aside-categories";
 import { MainContainer as Container } from "./ui/main-container";
 import PromoBanner from "./ui/main-deals-ui";
 import ProductCategoryCards from "./ui/product-category-highlights";
-import TodayDeals from "@/app/components/ui/today-deals-ui";
+// import TodayDeals from "../../app/components/ui/today-deals-ui";
 import TopSellingProducts from "./ui/top-selling";
 
 
@@ -14,7 +14,7 @@ export default function HomePage() {
       <Container>
         <AsideCategories />
         <ProductCategoryCards />
-        <TodayDeals />
+        {/* <TodayDeals /> */}
         <PromoBanner />
         <TopSellingProducts title={"Mais Vendidos"} />
         <LatestPosts />
