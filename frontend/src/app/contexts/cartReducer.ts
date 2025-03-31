@@ -10,12 +10,14 @@ export const initialState: CartState = {
   products: [],
 };
 
+
 export enum CART_ACTIONS {
-  ADD = "ADD_CART",
-  SHOW_CART = "TOGGLE_CART",
-  REMOVE = "REMOVE_FROM_CART",
-  DECREASE = "DECREASE_QUANTITY",
-  CACHE = "HYDRATE",
+  ADD = "ADD",
+  SHOW_CART = "SHOW_CART",
+  REMOVE = "REMOVE",
+  INCREASE = "INCREASE",
+  DECREASE = "DECREASE",
+  CACHE = "CACHE",
 }
 
 export default function cartReducer(
@@ -61,7 +63,7 @@ export default function cartReducer(
       return {
         ...state,
         products: state.products
-          .map((product) =>
+          .map((product: CartItem) =>
             product.id === String(action.payload)
               ? { ...product, quantity: Math.max(0, product.quantity - 1) }
               : product

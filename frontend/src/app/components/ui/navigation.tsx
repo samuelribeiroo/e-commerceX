@@ -23,7 +23,6 @@ import {
   MobileMenuProps,
   NavigationContentProps,
   NavigationGeneralProps,
-  Product,
 } from "@/app/@types";
 import useSearchProducts from "@/app/hooks/useSearchProducts";
 import { NotFound } from "../not-found";
@@ -64,7 +63,7 @@ function ApplicationLogo() {
   return (
     <>
       <div className="inline-flex items-center gap-3">
-        <img src={images[1].src} alt="" className="size-10" />
+        <img src={images[1].src.toLocaleString()} alt="" className="size-10" />
         <span className="inline-flex items-center font-inter text-3xl font-medium tracking-wider">
           Ecommerce<p className="text-[#CC0000]">X</p>
         </span>
@@ -79,7 +78,6 @@ function FormSearchProducts(props: { inputStyle?: string }) {
     handleSearchProduct,
     searchTerm,
     setSearchTerm,
-    searchRef,
   } = useSearchProducts();
 
   return (

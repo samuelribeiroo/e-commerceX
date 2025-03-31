@@ -1,8 +1,9 @@
 "use client";
 
 import { useCart } from "@/app/contexts/CartContext";
+import { CART_ACTIONS } from "@/app/contexts/cartReducer";
 import { formatCurrencyBRL } from "@/app/utils";
-import { Minus, Plus, Trash2, X } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { PropsWithChildren } from "react";
 
 type CartSideBarContainerProps = PropsWithChildren<{
@@ -48,16 +49,31 @@ function SideBarContent(props: {
 
   const { dispatch } = useCart();
   
-  const addToCart = () => {
+  const handleAddProducts = () => {
     dispatch({
-      type: "ADD_CART",
+      type: CART_ACTIONS.ADD,
       payload: {
         ...props.product,
+        // @ts-expect-error - ignore
         title: props.product.productTitle,
         quantity: 1,
       },
     });
   };
+
+  const handleRemoveProducts = () => {
+    dispatch({
+      type: CART_ACTIONS.REMOVE,
+      payload: props.product.id
+    })
+  }
+
+  const handleDecreaseProductAmount = () => {
+    dispatch({
+      type: CART_ACTIONS.DECREASE,
+      payload: props.product.id
+    })
+  }
   
   return (
     <>
@@ -71,21 +87,21 @@ function SideBarContent(props: {
         <div className="mt-3 flex items-center justify-between">
           <div className="flex items-center">
             <button
-              onClick={() => alert("oi")}
+              onClick={() => handleDecreaseProductAmount()}
               className="w-8 h-8 flex items-center justify-center border rounded-full"
             >
               <Minus className="h-4 w-4" />
             </button>
             <span className="mx-3 w-6 text-center">{props.quantity}</span>
             <button
-              onClick={() => addToCart()}
+              onClick={() => handleAddProducts()}
               className="w-8 h-8 flex items-center justify-center border rounded-full"
             >
               <Plus className="h-4 w-4" />
             </button>
           </div>
           <button
-            onClick={() => alert("oi")}
+            onClick={() => handleRemoveProducts()}
             className="p-1 text-gray-500 hover:text-gray-700"
           >
             <Trash2 className="h-5 w-5" />

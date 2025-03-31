@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { ORDER_BY, Product, UsePriceFilterProps } from "../@types";
-import { handlePriceChange, parseProductPrice } from "../utils";
+import { handlePriceChange } from "../utils";
 
 export default function useFilterByPriceAndSort({
   initialProducts,
@@ -10,7 +10,7 @@ export default function useFilterByPriceAndSort({
   const [priceFrom, setPriceFrom] = useState<string>("");
   const [priceTo, setPriceTo] = useState<string>("");
 
-  // @ts-ignore
+  // @ts-expect-error - Just ignore
   const handleApplyFilter = (product) => {
     const minPrice = priceFrom ? Number.parseFloat(priceFrom) : 0;
     const maxPrice = priceTo

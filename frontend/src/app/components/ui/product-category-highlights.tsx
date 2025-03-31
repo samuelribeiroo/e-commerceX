@@ -10,7 +10,7 @@ export default function ProductCategoryCards() {
   return (
     <>
       <ProductCategoryContent>
-        {productCategories.map(({ id, title, discount, link, src }) => (
+        {productCategories.map(({ id, title, link, src }) => (
           <Link href={link} key={id}>
             <div
               className="cursor-pointer relative overflow-hidden rounded-lg h-[180px] border-2 border-gray-200"

@@ -54,12 +54,13 @@ export default function useSearchProducts() {
 
       data = data.map((product: Product[]) => ({
         ...product,
-        // @ts-ignore
+         // @ts-expect-error - This variable exists in the codebase because the fetch API brings an array with all the images related to the product, but we only need the first one. So apply the spread and slice operator to the array of product images.
         images: product.images.slice(0, 1),
-      })); // This variable exists in the codebase because the fetch API brings an array with all the images related to the product, but we only need the first one. So apply the spread and slice operator to the array of product images.
+      })); //
 
       setSearchResults(data || []);
     } catch (error) {
+      console.log(error)
       setSearchResults([]);
     }
   };

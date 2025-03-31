@@ -8,6 +8,8 @@ import {
 } from "react";
 import { CART_ACTIONS } from "../contexts/cartReducer";
 
+export type ParamsType = Promise<{ id: string }>
+
 export type Category = {
   id: number;
   name: string;

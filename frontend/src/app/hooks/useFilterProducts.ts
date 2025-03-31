@@ -1,17 +1,12 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Brand, Product } from "../@types";
+import {  Product, ProductCategoryViewProps } from "../@types";
 
-export default function useFilterProducts({
-  initialBrands,
-  initialProducts,
-}: {
-  initialBrands: Brand[];
-  initialProducts: Product[];
-}) {
+export default function useFilterProducts({ initialBrands, initialProducts }: ProductCategoryViewProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+
 
   const [filteredProducts, setFilteredProducts] =
     useState<Product[]>(initialProducts);

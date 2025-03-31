@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { Product } from "../@types";
-import { apiURL } from "../data";
 import { cacheManagerFactory } from "../utils/cache-manager";
 
 

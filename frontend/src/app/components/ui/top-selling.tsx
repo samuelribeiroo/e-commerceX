@@ -1,6 +1,8 @@
 "use client";
 
-import { Product } from "@/app/@types";
+
+
+import { Product, SellingPropsType } from "@/app/@types";
 import useFetchRandomProducts from "@/app/hooks/useFetchRandomProducts";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -30,33 +32,51 @@ function ProductTopSellingsCard({
   );
 }
 
-export default function TopSellingProducts() {
+interface Props {
+  title?: string; 
+}
+
+export default function TopSellingProducts({ title = "Mais Vendidos" }: Props) {
   const { randomProducts, fetchRandomProducts } = useFetchRandomProducts();
 
   useEffect(() => {
-    fetchRandomProducts("Nootebooks", 3, "Celulares", 2);
-  }, []);
+    fetchRandomProducts("Smart Watch", 2, "Smartphone", 3);
+  }, [fetchRandomProducts]);
 
   return (
-    <>
-      <section className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl md:text-2xl font-medium text-gray-800">
-            Mais Vendidos
-          </h2>
-          <Link
-            href="/products"
-            className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+    <TopSellingContainer text={title}>
+      <TopSellingGrid>
+        {randomProducts.map((product) => (
+          <Link 
+            href={`/products/${product.id}`} 
+            key={`${product.id}-${product.brandId}`}
           >
-            ver todos <ChevronRight className="w-4 h-4 ml-1" />
+            <ProductTopSellingsCard {...product} />
           </Link>
-        </div>
+        ))}
+      </TopSellingGrid>
+    </TopSellingContainer>
+  );
+}
 
-        <TopSellingGrid>
-          {randomProducts.map((product, index) => (
-            <ProductTopSellingsCard key={index} {...product} />
-          ))}
-        </TopSellingGrid>
+function TopSellingContainer({ text, children }: SellingPropsType) {
+  return (
+    <>
+      <section className="w-full py-12 px-4 md:px-6">
+        <div className="container mx-auto max-w-7xl">
+          <span className="d-flex-between">
+            <h2 className="text-xl md:text-2xl font-medium text-gray-800">
+              {text}
+            </h2>
+            <Link
+              href="/"
+              className="text-sm text-gray-600 hover:text-gray-900 flex items-center"
+            >
+              ver todos <ChevronRight className="size-4 ml-1" />
+            </Link>
+          </span>
+          {children}
+        </div>
       </section>
     </>
   );
@@ -71,3 +91,5 @@ function TopSellingGrid({ children }: PropsWithChildren) {
     </>
   );
 }
+
+export { TopSellingContainer, TopSellingGrid, ProductTopSellingsCard };

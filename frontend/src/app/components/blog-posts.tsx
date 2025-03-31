@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { BlogPostsProps, Post } from "../@types";
+import { BlogPostsProps } from "../@types";
 import { blogPosts } from "../data";
 import { CardPost, CardPostContent, CardPostFooter } from "./ui/card-posts-ui";
 import Link from "next/link";

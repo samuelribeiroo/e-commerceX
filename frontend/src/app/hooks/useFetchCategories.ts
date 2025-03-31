@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { apiURL, CACHE_TIME } from "../data";
+import { CACHE_TIME } from "../data";
 import { Category } from "../@types";
 import { CacheManager } from "../utils/cache-manager";
 

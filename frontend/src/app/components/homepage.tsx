@@ -16,7 +16,7 @@ export default function HomePage() {
         <ProductCategoryCards />
         {/* <TodayDeals /> */}
         <PromoBanner />
-        <TopSellingProducts title={"Mais Vendidos"} />
+        <TopSellingProducts title="Mais Vendidos" />
         <LatestPosts />
         <OfferComponent />
       </Container>

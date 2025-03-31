@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Brand, ORDER_BY, Product, ProductCategoryViewProps } from "../@types";
+import { ORDER_BY, Product, ProductCategoryViewProps } from "../@types";
 import { NotFound } from "../components/not-found";
 import {
   AsideProductsFilters as FilterByCategory,
@@ -79,8 +79,7 @@ export function ProductCategoryView({ initialBrands, initialProducts }: ProductC
           ) : (
             sortedProducts.map((product: Product) => {
               return (
-                <>
-                  <Link href={`/products/${product.id}`}>
+                  <Link href={`/products/${product.id}`} key={product.id}>
                     <ProductCard
                       key={`${product.id}-${product.brandId}`}
                       productTitle={product.productTitle}
@@ -93,7 +92,6 @@ export function ProductCategoryView({ initialBrands, initialProducts }: ProductC
                       brandId={product.brandId}
                     />
                   </Link>
-                </>
               );
             })
           )}

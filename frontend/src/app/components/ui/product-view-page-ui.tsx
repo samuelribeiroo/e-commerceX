@@ -1,10 +1,9 @@
 "use client";
 
-import { CartItem, Product, ProductImagePropsWithOrder, ProductPageProps } from "@/app/@types";
+import { CartItem,ProductImagePropsWithOrder, ProductPageProps } from "@/app/@types";
 import { useCart } from "@/app/contexts/CartContext";
-import { formatCurrencyBRL, generateRandomNumber } from "@/app/utils";
-import { Heart, Minus, Plus, Share2, Trash2, X } from "lucide-react";
-import { Cross2Icon } from "@radix-ui/react-icons";
+import {  generateRandomNumber } from "@/app/utils";
+import { Heart,  Share2,  X } from "lucide-react";
 import Image from "next/image";
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { CART_ACTIONS } from "@/app/contexts/cartReducer";
@@ -16,7 +15,7 @@ import {
   TotalPrice,
   CartSidebarData as Container,
 } from "./shopping-cart-ui";
-import { it } from "node:test";
+
 import { cacheManagerFactory } from "@/app/utils/cache-manager";
 
 function ProductPageContainer({ title, children }: ProductPageProps) {
@@ -41,7 +40,7 @@ function ProductImageGallery(props: {
 }) {
   const [mainImage, setMainImage] = useState(props.productImages[0]);
 
-  // @ts-expect-error
+  // @ts-expect-error - Just ignore
   const changeMainImage = (image) => setMainImage(image);
 
   return (
@@ -50,10 +49,10 @@ function ProductImageGallery(props: {
       <ProductImagesMiniatures>
         {props.productImages.map((image) => (
           <div
-            // @ts-ignore
+            // @ts-expect-error - Just ignore
             key={image.id}
             className={`border-2 rounded cursor-pointer w-16 h-16 flex-shrink-0 overflow-hidden ${
-              // @ts-expect-error
+              // @ts-expect-error - Just ignore
               mainImage.id === image.id ? "border-primary" : "border-gray-200"
             }`}
             onClick={() => changeMainImage(image)}
@@ -158,7 +157,7 @@ function BuyProductComponent(props: {
   const addToCart = () => {
     dispatch({
       type: CART_ACTIONS.ADD,
-      // @ts-ignore
+   // @ts-expect-error - Just ignore
       payload: {
         ...props.product,
         productTitle: props.product?.productTitle,
