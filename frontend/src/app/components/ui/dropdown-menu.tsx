@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from '../../lib/clsx'
+import { cn } from "@/app/lib/clsx";
 import * as React from "react";
-import * as DropdownMenuPrimitive from "../../../../node_modules/@radix-ui/react-dropdown-menu/dist/index";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 
 const DropdownMenu = DropdownMenuPrimitive.Root;
 
