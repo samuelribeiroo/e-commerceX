@@ -29,7 +29,6 @@ export function ProductDetails({ product }: { product: Product }) {
       <ProductPageInfo>
         <ProductImageGallery productImages={product.images} />
         <div className="w-full lg:w-2/5">
-        
           <div className="flex items-center justify-between border-b pb-4">
             <span className="font-bold text-lg">
               <h2 className="text-2xl font-semibold text-gray-700">
@@ -54,10 +53,20 @@ export function ProductDetails({ product }: { product: Product }) {
             installment={productPriceInstallment}
           />
 
-          <BuyProductComponent text={"Comprar"} icon={<ShoppingCart />} />
+          <BuyProductComponent
+            text={"Comprar"}
+            icon={<ShoppingCart />}
+            productId={""}
+            product={{
+              id: product.id,
+              productTitle: product.productTitle,
+              productPrice: product.productPrice,
+              images: product?.images,
+            }}
+          />
         </div>
       </ProductPageInfo>
-      {/* <TopSellingProducts /> */}
+      <TopSellingProducts title={"RELACIONADOS"} />
     </ProductPageContainer>
   );
 }
