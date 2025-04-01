@@ -27,8 +27,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt" suppressHydrationWarning>
-      <body
+    <html lang="pt">
+    <link rel="shortcut icon" href="https://firebasestorage.googleapis.com/v0/b/third-project-89e32.appspot.com/o/PRODUTOS%2Fcelulares%2Fslides%2Flogo.svg?alt=media&token=a1773acf-0100-4ee4-8456-08f39a8e301f" type="image/x-icon" />
+      <body suppressHydrationWarning={true}
         className={`${outfitSans.variable} ${interMono.variable} antialiased`}
       >
         <CartProvider>
