@@ -6,7 +6,7 @@ import { Category } from "../@types";
 import { CacheManager } from "../utils/cache-manager";
 
 const CACHE_PREFIX = "categories";
-const cache = new CacheManager(CACHE_TIME.EIGHT_HOURS);
+const cache = new CacheManager(CACHE_TIME.ONE_WEEK);
 
 export default function useFetchCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
